@@ -59,8 +59,14 @@ int init_program(Program *program, const char *file_name){
 
     while ((ch = fgetc(file)) != EOF) {
         if (!is_bf(ch)) continue; 
+        if (program->program_size >= STACK_SIZE){
+            printf("Program too large.\n"); 
+            return 1; 
+        }
         program->code[program->program_size++] = ch; 
     }
+
+    
 
     fclose(file); 
     return 0;
@@ -113,7 +119,7 @@ int main(int argc, char *argv[]){
 
     Program program = {0}; 
     const char* program_name = argv[1]; 
-    init_program(&program, program_name);
+    if (init_program(&program, program_name) != 0) return 1; 
     find_all_jumps(&program);  
     run_bf(&program);
 
